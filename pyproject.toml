@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "eir"
+version = "0.1.0"
+description = "Energy Inference Representation - A standalone mixed-variable optimization and verification layer."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "numpy>=1.20",
+]
+
+[project.optional-dependencies]
+verify = ["ortools>=9.8"]
+dev = ["pytest", "ruff"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
