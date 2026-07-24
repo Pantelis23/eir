@@ -62,6 +62,43 @@ print(result.assignment)
 ## 4. Why EIR?
 Standard Deep RL learns a policy $\pi(a|s)$ via trial and error. EIR allows an agent to **deliberate**. When faced with a novel situation, an agent equipped with EIR can instantiate a local energy graph of its predicted future, relax the graph to find the lowest-energy (safest/highest reward) path, and act with mathematical certainty based on its internal world model.
 
+## 5. When does the relaxation actually decode correctly?
+
+Relaxing discrete logic into an energy field and decoding by `argmax` only works if
+the noisy relaxation lands in the *intended* basin. [CRNL](https://github.com/Pantelis23/CRNL)
+studies that question as physics (chemical reaction networks that either restore a
+signal against noise or lose it), and its two measured phenomena both reproduce in
+`FieldBackend`. `tools/crnl_bridge.py` runs the experiment; data and figures in
+`results/`.
+
+**Anneal too fast and the planner freezes.** Sweeping the annealing budget `steps`
+at a fixed option count, decode quality rises then saturates — a short quench leaves
+the decode near random, the analogue of CRNL's freeze-out transition (budget ~ 1/H).
+
+**More options cost decode reliability — and it is not a tuning artifact.** At a
+large fixed budget, with **each option count given its own best `(lr, noise_start)`**
+over a 3×3 grid:
+
+| options n | 2 | 4 | 8 | 16 | 32 |
+|---|---|---|---|----|----|
+| P(correct decode), tuned | 0.957 | 0.797 | 0.590 | 0.423 | 0.267 |
+| random baseline 1/n | 0.500 | 0.250 | 0.125 | 0.063 | 0.031 |
+
+Per-n tuning lifts every point by only +0.03…+0.09 — it shifts the curve without
+flattening it — so the falloff is structural, not a hyperparameter accident.
+Decoding stays well above random throughout, but the absolute margin shrinks.
+
+**Practical reading.** Budget and option count trade off against the energy gap
+`delta`: a wider action space needs a longer anneal to hold the same decode
+reliability, with diminishing returns, and no schedule rescues a gap that is too
+small for the number of competing basins.
+
+```bash
+# uses the shared Work venv (has eir installed editable)
+../venv/bin/python tools/crnl_bridge.py --quick
+../venv/bin/python tools/crnl_bridge.py --mode radix
+```
+
 ---
 **Author:** Pantelis Christou  
 **License:** MIT
