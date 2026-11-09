@@ -15,6 +15,7 @@ dependencies = [
 [project.optional-dependencies]
 verify = ["ortools>=9.8"]
 dev = ["pytest", "ruff"]
+bridge = ["matplotlib"]   # tools/crnl_bridge.py figures
 
 [tool.setuptools.packages.find]
 where = ["src"]

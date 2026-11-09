@@ -33,10 +33,11 @@ TWO EXPERIMENTS
                   n can do. If the penalty survives per-n tuning it is real; if it
                   vanishes, the earlier claim was a tuning artifact.
 
-Run with the shared Work venv (it has eir installed editable):
+Run with eir's own project venv (eir installed editable: `python3 -m venv .venv &&
+.venv/bin/python -m pip install -e ".[dev,bridge]"`). The shared Work venv this used to name no longer exists.
 
-    /home/pantelis/Desktop/Projects/Work/venv/bin/python tools/crnl_bridge.py --quick
-    /home/pantelis/Desktop/Projects/Work/venv/bin/python tools/crnl_bridge.py --mode radix
+    .venv/bin/python tools/crnl_bridge.py --quick
+    .venv/bin/python tools/crnl_bridge.py --mode radix
 """
 
 from __future__ import annotations
